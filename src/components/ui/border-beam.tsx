@@ -9,6 +9,7 @@ interface BorderBeamProps {
   colorTo?: string;
   children?: React.ReactNode;
   isHovered?: boolean; // Force hover state regardless of mouse position
+  bottomOnly?: boolean; // Show animation only on bottom edge, left to right
 }
 
 const BorderBeam: React.FC<BorderBeamProps> = ({
@@ -19,19 +20,21 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
   colorTo = '#8b5cf6',
   children,
   isHovered: forceHovered = false,
+  bottomOnly = false,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   // Effective hover state: use prop if set, otherwise use actual hover state
   const effectiveHovered = forceHovered || isHovered;
-  const [currentSide, setCurrentSide] = useState(0); // 0: top, 1: right, 2: bottom, 3: left
+  // If bottomOnly is true, always use bottom side (2), otherwise start with top (0)
+  const [currentSide, setCurrentSide] = useState(bottomOnly ? 2 : 0); // 0: top, 1: right, 2: bottom, 3: left
 
-  // Initialize visibility when forceHovered is set
+  // Initialize visibility when forceHovered is set or bottomOnly is true
   useEffect(() => {
-    if (forceHovered) {
+    if (forceHovered || bottomOnly) {
       setIsVisible(true);
     }
-  }, [forceHovered]);
+  }, [forceHovered, bottomOnly]);
   const [shapes, setShapes] = useState<Array<{ id: number, x: number, y: number, color: string, shape: string, direction: string }>>([]);
   const [lightPosition, setLightPosition] = useState(0); // 0-100% around the border
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,8 +61,8 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
 
   const handleAnimationEnd = () => {
     setIsVisible(false);
-    if (!effectiveHovered) {
-      // Move to next side
+    if (!effectiveHovered && !bottomOnly) {
+      // Move to next side (only if not bottomOnly)
       setCurrentSide((prev) => (prev + 1) % 4);
 
       // Restart animation with constant delay
@@ -68,6 +71,11 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
           setIsVisible(true);
         }
       }, 200); // Small constant delay between sides
+    } else if (!effectiveHovered && bottomOnly) {
+      // For bottomOnly, restart immediately on the same side
+      setTimeout(() => {
+        setIsVisible(true);
+      }, 200);
     }
   };
 
@@ -82,9 +90,9 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
     }
   }, [effectiveHovered]);
 
-  // Generate shapes at beam position when hovered
+  // Generate shapes at beam position when hovered (disabled for bottomOnly)
   useEffect(() => {
-    if (effectiveHovered && isVisible) {
+    if (effectiveHovered && isVisible && !bottomOnly) {
       const interval = setInterval(() => {
         const newShape = {
           id: shapeIdRef.current++,
@@ -105,7 +113,7 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
 
       return () => clearInterval(interval);
     }
-  }, [effectiveHovered, isVisible]);
+  }, [effectiveHovered, isVisible, bottomOnly]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -177,11 +185,12 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
           ...baseStyle,
           position: 'absolute' as const,
           bottom: 0,
-          right: 0,
-          width: `${size}px`,
+          left: bottomOnly ? 0 : undefined,
+          right: bottomOnly ? undefined : 0,
+          width: bottomOnly ? '100%' : `${size}px`,
           height: '3px',
-          background: createGradient('270deg'),
-          animation: 'beamBottom 8s ease-in-out',
+          background: createGradient(bottomOnly ? '90deg' : '270deg'),
+          animation: bottomOnly ? 'beamBottomLeftToRight 3s ease-in-out infinite' : 'beamBottom 8s ease-in-out',
         };
       case 3: // Left
         return {
@@ -262,7 +271,7 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       {/* Single beam - one at a time */}
-      {isVisible && !effectiveHovered && (
+      {isVisible && (!effectiveHovered || bottomOnly) && (
         <div
           ref={beamRef}
           className="absolute z-10"
@@ -271,11 +280,11 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
         />
       )}
 
-      {/* Flying geometric shapes on hover */}
-      {effectiveHovered && shapes.map(renderShape)}
+      {/* Flying geometric shapes on hover (disabled for bottomOnly) */}
+      {effectiveHovered && !bottomOnly && shapes.map(renderShape)}
 
-      {/* Moving light around border when hovered */}
-      {effectiveHovered && (
+      {/* Moving light around border when hovered (disabled for bottomOnly) */}
+      {effectiveHovered && !bottomOnly && (
         <div
           className="absolute z-10 "
           style={{
@@ -341,6 +350,23 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
           }
           100% {
             transform: translateX(-100vw);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes beamBottomLeftToRight {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          5% {
+            opacity: 0.8;
+          }
+          95% {
+            opacity: 0.8;
+          }
+          100% {
+            transform: translateX(100%);
             opacity: 0;
           }
         }

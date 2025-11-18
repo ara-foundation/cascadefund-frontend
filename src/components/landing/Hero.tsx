@@ -72,10 +72,15 @@ const Hero = ({ accent = Accent.monetizationPrimaryAccent, homePage = '/' }: Her
           <h1 className="font-mono text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
             <Logo imgSize="h-20 w-20" />
           </h1>
-          <p className="text-xl sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 font-mono max-w-8xl mx-auto leading-relaxed">
-            <strong>Social Media + Collaboration Platform</strong> for
-            open source maintainers.
-          </p>
+          <BorderBeam
+            className="block p-3 mx-auto"
+            bottomOnly={true}
+          >
+            <p className="text-xl sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 font-mono max-w-8xl mx-auto leading-relaxed">
+              <strong>Social Media + Collaboration Platform</strong> for
+              open source maintainers.
+            </p>
+          </BorderBeam>
 
         </motion.div>
 
