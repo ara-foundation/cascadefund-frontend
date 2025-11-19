@@ -10,6 +10,8 @@ interface BorderBeamProps {
   children?: React.ReactNode;
   isHovered?: boolean; // Force hover state regardless of mouse position
   bottomOnly?: boolean; // Show animation only on bottom edge, left to right
+  animationDelay?: number; // Delay before animation starts (in seconds)
+  animationIterations?: number | 'infinite'; // Number of animation iterations (1 for single pass, 'infinite' for continuous)
 }
 
 const BorderBeam: React.FC<BorderBeamProps> = ({
@@ -21,6 +23,8 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
   children,
   isHovered: forceHovered = false,
   bottomOnly = false,
+  animationDelay = 0,
+  animationIterations = 'infinite',
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -271,7 +275,7 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       {/* Single beam - one at a time (or triangle for bottomOnly) */}
-      {isVisible && (!effectiveHovered || bottomOnly) && !bottomOnly && (
+      {isVisible && (!effectiveHovered || bottomOnly) && (
         <div
           ref={beamRef}
           className="absolute z-10"
@@ -280,7 +284,7 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
         />
       )}
       
-      {/* Moving triangle for bottomOnly mode */}
+      {/* Moving triangle for bottomOnly mode - always visible when bottomOnly is true */}
       {bottomOnly && (
         <div
           className="absolute z-10"
@@ -293,7 +297,8 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
             borderLeft: '4px solid transparent',
             borderRight: '4px solid transparent',
             borderBottom: `8px solid ${colorTo}`,
-            animation: 'triangleBottomLeftToRight 3s linear infinite',
+            animation: `triangleBottomLeftToRight 3s linear infinite`,
+            animationDelay: `${animationDelay}s`,
             pointerEvents: 'none',
             opacity: 0.8,
           }}
@@ -314,6 +319,7 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
             borderRadius: '50%',
             background: `radial-gradient(circle, ${colorTo} 0%, ${colorFrom} 50%, transparent 100%)`,
             animation: `moveLight 5s linear infinite`,
+            animationDelay: `${animationDelay}s`,
             transform: `translate(${lightPosition * 4}px, 0)`, // This will be overridden by CSS animation
             pointerEvents: 'none',
           }}
@@ -393,19 +399,17 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
         
         @keyframes triangleBottomLeftToRight {
           0% {
-            left: 0;
-            transform: translateX(-4px);
+            left: -20px;
             opacity: 0;
           }
-          2% {
+          10% {
             opacity: 0.8;
           }
-          98% {
+          90% {
             opacity: 0.8;
           }
           100% {
-            left: 100%;
-            transform: translateX(4px);
+            left: calc(100% + 20px);
             opacity: 0;
           }
         }
