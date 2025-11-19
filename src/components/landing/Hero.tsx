@@ -98,11 +98,9 @@ const Hero = ({ accent = Accent.monetizationPrimaryAccent, homePage = '/' }: Her
               transition={{ duration: 0.8, delay: 0.6 }}
               className="mx-auto mt-0"
             >
-              {Object.values(Accent).filter((accent_ => accent_ !== accent)).map((accent, index) => {
+              {Object.values(Accent).map((accent, index) => {
                 const accentData = data[accent]
                 const url = accentToUrl[accent]
-                // Animation delays: 3s, 6s, 9s for sequential animation after text (0s)
-                const animationDelay = 3 + (index * 3)
                 return (
                   <motion.li
                     key={accent}
@@ -113,15 +111,16 @@ const Hero = ({ accent = Accent.monetizationPrimaryAccent, homePage = '/' }: Her
                     <BorderBeam
                       className="block p-2"
                       bottomOnly={true}
-                      animationDelay={animationDelay}
+                      animationDelay={3 + (index * 3)}
                       animationIterations={'infinite'}
                     >
-                      <Link asNewTab={true} className="font-mono text-xs text-gray-400 ml-1" uri={url}>
-                        <div className="text-left flex gap-2 transition-colors cursor-pointer h-full">
-                          {getIcon({ iconType: accentData.icon as IconType, className: 'w-8 h-8 animate-pulse text-teal-500' })}
-                          <h3 className="font-mono text-lg font-semibold text-gray-600 dark:text-slate-500 mb-2 hover:text-blue-400 transition-colors">
+                      <Link className={`font-mono text-xs  ml-1`} uri={accent === accentKey ? '#' : url}>
+                        <div className="text-left flex gap-2 transition-colors cursor-pointer h-full items-center">
+                          {getIcon({ iconType: accentData.icon as IconType, className: `w-8 h-8 animate-pulse ${accent === accentKey ? 'text-slate-600' : 'text-teal-500'}` })}
+                          <h3 className={`font-mono text-lg font-semibold mb-2 mt-2 justify-center items-center  transition-colors ${accent === accentKey ? 'text-slate-600' : 'text-gray-600 dark:text-slate-500 hover:text-blue-400'}`}>
                             {accentData.title}
                           </h3>
+                          {accent === accentKey && getIcon({ iconType: 'arrow-right', className: 'w-4 h-4 text-slate-600' })}
                         </div>
                       </Link>
                     </BorderBeam>

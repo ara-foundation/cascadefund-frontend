@@ -4,6 +4,8 @@ import { Menu, X } from 'lucide-react'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import Logo from './Logo'
 import Link from '../custom-ui/Link'
+import { socialLinks } from '@/scripts/data'
+import SocialLink from './SocialLink'
 
 
 const Header = () => {
@@ -30,8 +32,13 @@ const Header = () => {
       >
         <nav className="section-padding py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex items-center space-x-2">
               {isScrolled ? <Link uri="/"><Logo imgSize="h-6 w-6" /></Link> : null}
+              <motion.div className="flex space-x-2">
+                {socialLinks.map((link) => (
+                  <SocialLink className='mx-4 bg-white/10 rounded-sm p-2 hover:bg-white/20 transition-colors w-8 h-8 flex ' key={link.url} link={link} />
+                ))}
+              </motion.div>
             </div>
 
             {/* Desktop Navigation */}

@@ -10,14 +10,14 @@ import JoinUs from "../../components/landing/JoinUs";
 import Team from "../../components/landing/Team";
 import Footer from "../../components/landing/Footer";
 import Layout from "../../layouts/Layout.astro";
-import { Accent } from "../../scripts/data";
+import { Accent } from "../../scripts/data.tsx";
 ---
 
 <Layout>
   <Header client:load />
   <main>
     <Hero client:load accent={Accent.questSystemAccent} />
-    <HowItWorks client:load />
+    <HowItWorks client:load accent={Accent.questSystemAccent} />
     <Features client:load />
     <Vision client:load />
     <Pricing client:load />
