@@ -270,13 +270,33 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Single beam - one at a time */}
-      {isVisible && (!effectiveHovered || bottomOnly) && (
+      {/* Single beam - one at a time (or triangle for bottomOnly) */}
+      {isVisible && (!effectiveHovered || bottomOnly) && !bottomOnly && (
         <div
           ref={beamRef}
           className="absolute z-10"
           style={getBeamStyle()}
           onAnimationEnd={handleAnimationEnd}
+        />
+      )}
+      
+      {/* Moving triangle for bottomOnly mode */}
+      {bottomOnly && (
+        <div
+          className="absolute z-10"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: 0,
+            height: 0,
+            borderLeft: '4px solid transparent',
+            borderRight: '4px solid transparent',
+            borderBottom: `8px solid ${colorTo}`,
+            animation: 'triangleBottomLeftToRight 3s linear infinite',
+            pointerEvents: 'none',
+            opacity: 0.8,
+          }}
         />
       )}
 
@@ -367,6 +387,25 @@ const BorderBeam: React.FC<BorderBeamProps> = ({
           }
           100% {
             transform: translateX(100%);
+            opacity: 0;
+          }
+        }
+        
+        @keyframes triangleBottomLeftToRight {
+          0% {
+            left: 0;
+            transform: translateX(-4px);
+            opacity: 0;
+          }
+          2% {
+            opacity: 0.8;
+          }
+          98% {
+            opacity: 0.8;
+          }
+          100% {
+            left: 100%;
+            transform: translateX(4px);
             opacity: 0;
           }
         }
