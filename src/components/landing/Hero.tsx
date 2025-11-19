@@ -62,123 +62,144 @@ const Hero = ({ accent = Accent.monetizationPrimaryAccent, homePage = '/' }: Her
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="grid-bg absolute inset-0 opacity-20"></div>
 
-      <div className="section-padding w-full max-w-8xl mx-auto relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="mb-8 text-center"
-        >
-          <h1 className="font-mono text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-            <Logo imgSize="h-20 w-20" />
-          </h1>
-          <p className="text-xl sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 font-mono max-w-8xl mx-auto leading-relaxed">
-            <strong>Social Media + Collaboration Platform</strong> for
-            open source maintainers.
-          </p>
-
-        </motion.div>
-
-        <div className="text-center flex items-center justify-center">
-          <motion.ul
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="mx-auto mt-0"
-          >
-            {Object.values(Accent).map((accent, index) => {
-              const accentData = data[accent]
-              const url = accentToUrl[accent]
-              return (
-                <motion.li
-                  key={accent as Key}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
-                >
-                  <Link className={`font-mono text-xs  ml-1`} uri={accent === accentKey ? '#' : url}>
-                    <div className="text-left flex gap-2 transition-colors cursor-pointer h-full items-center">
-                      {getIcon({ iconType: accentData.icon as IconType, className: `w-8 h-8 animate-pulse ${accent === accentKey ? 'text-slate-600' : 'text-teal-500'}` })}
-                      <h3 className={`font-mono text-lg font-semibold mb-2 mt-2 justify-center items-center  transition-colors ${accent === accentKey ? 'text-slate-600' : 'text-gray-600 dark:text-slate-500 hover:text-blue-400'}`}>
-                        {accentData.title}
-                      </h3>
-                      {accent === accentKey && getIcon({ iconType: 'arrow-right', className: 'w-4 h-4 text-slate-600' })}
-                    </div>
-                  </Link>
-                </motion.li>
-              )
-            })}
-          </motion.ul>
-
-
+      {/* Main BorderBeam container for the entire Hero section */}
+      <BorderBeam 
+        className="absolute inset-0 w-full h-full pointer-events-none"
+        isHovered={true}
+        animationDelay={0}
+      >
+        <div className="section-padding w-full max-w-8xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className=" mx-auto"
+            transition={{ duration: 0.8 }}
+            className="mb-8 text-center"
           >
-            {/* Terminal Window */}
+            <h1 className="font-mono text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
+              <Logo imgSize="h-20 w-20" />
+            </h1>
             <BorderBeam
-              className='relative p-5'
-              isHovered={true}
+              className="block p-3 mx-auto"
+              bottomOnly={true}
+              animationDelay={0}
+              animationIterations={'infinite'}
             >
-
-              <PreviewContainer
-                previewUrl=''
-                className='relative z-2'
-                childrenClassName='flex flex-col items-center justify-center'>
-                <div className="font-mono text-green-400 mt-4 text-xl">
-                  {data[accentKey].title}
-                </div>
-
-                <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                  <div className="flex-1">
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                        setError(null)
-                      }}
-                      onKeyPress={handleKeyPress}
-                      placeholder="user@example.com"
-                      className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xs text-green-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-mono"
-                      disabled={isLoading}
-                    />
-                    {error && (
-                      <p className="mt-2 text-sm text-red-400 font-mono">{error}</p>
-                    )}
-                  </div>
-                  <div id="hero-turnstile-container">
-
-                  </div>
-                  <Button
-                    variant="success"
-                    focus={true}
-                    className="h-12 group w-full md:w-60 flex items-center justify-center space-x-2 sm:w-full sm:mb-2"
-                    onClick={() => handleJoinWishlist('hero', 'hero-turnstile-container', email, setIsLoading, setError, setShowSuccessModal, setEmail)}
-                    disabled={isLoading}
-                  >
-                    <Terminal className="w-4 h-4" />
-                    <span>{isLoading ? 'Joining...' : 'Join Beta Wishlist'}</span>
-                    {!isLoading && (
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    )}
-                  </Button>
-                </div>
-                <p className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1">
-                  Two emails only, one to notify our launch, one is surprise.
-                </p>
-
-              </PreviewContainer>
-              <div
-                className='z-1 absolute top-1 left-1 right-1 bottom-1 shadow-lg shadow-teal-400/40 animate-pulse border-none bg-transparent'
-              >
-              </div>
+              <p className="text-xl sm:text-xl lg:text-2xl text-gray-600 dark:text-gray-400 font-mono max-w-8xl mx-auto leading-relaxed">
+                <strong>Social Media + Collaboration Platform</strong> for
+                open source maintainers.
+              </p>
             </BorderBeam>
           </motion.div>
+
+          <div className="text-center flex items-center justify-center">
+            <motion.ul
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mx-auto mt-0"
+            >
+              {Object.values(Accent).map((accent, index) => {
+                const accentData = data[accent]
+                const url = accentToUrl[accent]
+                return (
+                  <motion.li
+                    key={accent}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
+                  >
+                    <BorderBeam
+                      className="block p-2"
+                      bottomOnly={true}
+                      animationDelay={3 + (index * 3)}
+                      animationIterations={'infinite'}
+                    >
+                      <Link className={`font-mono text-xs  ml-1`} uri={accent === accentKey ? '#' : url}>
+                        <div className="text-left flex gap-2 transition-colors cursor-pointer h-full items-center">
+                          {getIcon({ iconType: accentData.icon as IconType, className: `w-8 h-8 animate-pulse ${accent === accentKey ? 'text-slate-600' : 'text-teal-500'}` })}
+                          <h3 className={`font-mono text-lg font-semibold mb-2 mt-2 justify-center items-center  transition-colors ${accent === accentKey ? 'text-slate-600' : 'text-gray-600 dark:text-slate-500 hover:text-blue-400'}`}>
+                            {accentData.title}
+                          </h3>
+                          {accent === accentKey && getIcon({ iconType: 'arrow-right', className: 'w-4 h-4 text-slate-600' })}
+                        </div>
+                      </Link>
+                    </BorderBeam>
+                  </motion.li>
+                )
+              })}
+            </motion.ul>
+
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className=" mx-auto"
+            >
+              {/* Terminal Window */}
+              <BorderBeam
+                className='relative p-5'
+                isHovered={true}
+                animationDelay={12}
+              >
+
+                <PreviewContainer
+                  previewUrl=''
+                  className='relative z-2'
+                  childrenClassName='flex flex-col items-center justify-center'>
+                  <div className="font-mono text-green-400 mt-4 text-xl">
+                    {data[accentKey].title}
+                  </div>
+
+                  <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value)
+                          setError(null)
+                        }}
+                        onKeyPress={handleKeyPress}
+                        placeholder="user@example.com"
+                        className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-xs text-green-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent font-mono"
+                        disabled={isLoading}
+                      />
+                      {error && (
+                        <p className="mt-2 text-sm text-red-400 font-mono">{error}</p>
+                      )}
+                    </div>
+                    <div id="hero-turnstile-container">
+
+                    </div>
+                    <Button
+                      variant="success"
+                      focus={true}
+                      className="h-12 group w-full md:w-60 flex items-center justify-center space-x-2 sm:w-full sm:mb-2"
+                      onClick={() => handleJoinWishlist('hero', 'hero-turnstile-container', email, setIsLoading, setError, setShowSuccessModal, setEmail)}
+                      disabled={isLoading}
+                    >
+                      <Terminal className="w-4 h-4" />
+                      <span>{isLoading ? 'Joining...' : 'Join Beta Wishlist'}</span>
+                      {!isLoading && (
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      )}
+                    </Button>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs font-mono mt-1">
+                    Two emails only, one to notify our launch, one is surprise.
+                  </p>
+
+                </PreviewContainer>
+                <div
+                  className='z-1 absolute top-1 left-1 right-1 bottom-1 shadow-lg shadow-teal-400/40 animate-pulse border-none bg-transparent'
+                >
+                </div>
+              </BorderBeam>
+            </motion.div>
+          </div>
         </div>
-      </div>
+      </BorderBeam>
 
       <SuccessModal
         isOpen={showSuccessModal}
